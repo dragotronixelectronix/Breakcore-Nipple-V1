@@ -1,3 +1,4 @@
+#include <Config.h>
 #include <Hardware.h>
 
 void HandleJoyStick()
@@ -11,24 +12,24 @@ void HandleJoyStick()
     jvalue_y >= 400 && jvalue_y <= 600;
 
   if (centered) {
-    repeatRequest = false;
+    joyOn = false;
   } else {
-    repeatRequest = true;
+    joyOn = true;
   }
 
   if (jvalue_x < 400 && jvalue_y >= 500) {
-    repeatIndex = 0;
+    joyArea = 0;
   }
 
   if (jvalue_x > 400 && jvalue_y <= 300) {
-    repeatIndex = 1;
+    joyArea = 1;
   }
 
   if (jvalue_x > 400 && jvalue_y >= 600) {
-    repeatIndex = 2;
+    joyArea = 2;
   }
 
   if (jvalue_x > 600 && jvalue_y >= 500) {
-    repeatIndex = 3;
+    joyArea = 3;
   }
 }
