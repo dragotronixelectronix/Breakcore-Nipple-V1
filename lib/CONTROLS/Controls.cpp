@@ -1,6 +1,8 @@
 #include <Config.h>
 #include <Hardware.h>
 
+
+//Joystick 1 basics
 void HandleJoyStick()
 {
   jvalue_x = analogRead(JOY_X);

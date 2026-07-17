@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include "DaisyDuino.h"
 #include <MIDI.h>
+#include <MidiSync.h>
+#include <AudioEngine.h>
+#include <Controls.h>
 
 #include <Config.h>
 
@@ -22,12 +25,7 @@ void HandleStop();
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
-//Midi stuff//
-bool running = false;
-bool startRecived = false;
-uint8_t pulseCounter = 0;
-bool clockRecived = false;
-bool clockCounter = false;
+
 
 
 volatile bool clockIntervalReady = false;
@@ -39,7 +37,7 @@ volatile bool quarterReady = false;
 float DSY_SDRAM_BSS bufL[MAX_BUFFER];
 float DSY_SDRAM_BSS bufR[MAX_BUFFER];
 
-volatile bool repeatRequest = false;
+/* volatile bool repeatRequest = false;
 
 uint32_t writePos = 0;
 uint32_t repeatStart = 0;
@@ -52,7 +50,7 @@ uint8_t activeRepeatIndex = 255;
 bool wasRepeating = false;
 
 uint16_t jvalue_x;
-uint16_t jvalue_y;
+uint16_t jvalue_y; */
 
 
 void StartRepeat(uint8_t index)
@@ -74,6 +72,8 @@ void StartRepeat(uint8_t index)
   repeatPos = 0;
 }
 
+
+//clean up audio callback, move beat repeat into effect slot
 void AudioCallback(float **in, float **out, size_t size)
 {
   bool repeating = repeatRequest;
@@ -124,7 +124,7 @@ void AudioCallback(float **in, float **out, size_t size)
   }
 
 }
-
+//needs to be removed and called in a different way 
 void HandleJoyStick()
 {
   jvalue_x = analogRead(JOY_X);
@@ -192,6 +192,8 @@ void loop()
   SamplesPerClock();
 }
 
+
+//needs to be moved to sync section, need to decide if midisync has the sample counting or a seperate sync section that includes midisync
 void SamplesPerClock()
 {
   if (quarterReady) {
