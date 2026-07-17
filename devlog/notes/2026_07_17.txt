@@ -1,0 +1,13 @@
+-Cleaned up main.cpp
+-Midi and joystick reading and bpm calculatin wokrs (imperfectly, maybe ableton jitter)
+-Reorganized structure for easier handling, paths will change later
+
+TO DO:
+-improve midi clock and sampple counting
+-add single encoder for basic slot selection
+-create audio engine with effect slots and chain, modify audio callback to run on engine
+-implement buffer and beat repeat with parameters ()
+-add beat repeat quantization modes: intenal, midi (cv later)
+-create audio engine with effect slots and chain, modify audio callback to run on engine
+-add xy and 9x9 mode in joystick one control 
+-create basic control mapping and test with premapped beat repeat 
