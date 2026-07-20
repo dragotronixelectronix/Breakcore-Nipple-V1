@@ -1,21 +1,26 @@
 #include "MidiSync.h"
 #include "Config.h"
-
+#include <math.h>
 bool running = false;
 bool startRecived = false;
 uint8_t pulseCounter = 0;
 bool clockRecived = false;
 
-volatile uint32_t totalSamples = 0;
+volatile float totalSamples = 0;
 
-volatile uint32_t lastClockSample = 0;
-volatile uint32_t quarterStartSample = 0;
+volatile float lastClockSample = 0;
+volatile float quarterStartSample = 0;
 
-volatile uint32_t samplesPerClockInstant = 0;
-volatile uint32_t samplesPerQuarter = 0;
+volatile float samplesPerClockInstant = 0;
+volatile float rawsamplesPerQuarter = 0;
+volatile float samplesPerQuarter = 0;
 
 volatile bool quarterReady = false;
 volatile bool clockIntervalReady = false;
+
+volatile uint16_t bpm;
+
+
 
 void HandleStart()
 {
@@ -23,7 +28,7 @@ void HandleStart()
   startRecived = true;
   pulseCounter = 0;
 
-  uint32_t now = totalSamples;
+  float now = totalSamples;
 
   lastClockSample = now;
   quarterStartSample = now;
@@ -33,7 +38,7 @@ void HandleClock()
 {
   clockRecived = true;
 
-  uint32_t now = totalSamples;
+  float now = totalSamples;
 
   samplesPerClockInstant = now - lastClockSample;
   lastClockSample = now;
@@ -43,14 +48,20 @@ void HandleClock()
 
   pulseCounter++;
 
-  if (pulseCounter >= 24) {
-    pulseCounter = 0;
+  if (pulseCounter > 24) {
+    pulseCounter = 1;
 
-    samplesPerQuarter = now - quarterStartSample;
+    rawsamplesPerQuarter = now - quarterStartSample;
     quarterStartSample = now;
 
     quarterReady = true;
+
+    
+
   }
+  
+
+  
 }
 
 void HandleStop()
@@ -68,7 +79,13 @@ void SamplesPerClock()
   if (quarterReady) {
     quarterReady = false;
 
-    float bpm = 60.0f * 48000.0f / (float)samplesPerQuarter;
+    //works okay, but needs a buffer to average out the samples per quarter more accuratley
+    //array needs to be configured so it responds fast enough to tempo change
+
+    samplesPerQuarter = round((samplesPerQuarter * 0.95f) + (rawsamplesPerQuarter * 0.05f));
+
+    float unrounded = 60.0f * 48000.0f / (float)samplesPerQuarter;
+    bpm = round(unrounded);
 
     Serial.print("samples per quarter: ");
     Serial.print(samplesPerQuarter);

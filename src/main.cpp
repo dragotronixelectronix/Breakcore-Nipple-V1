@@ -2,6 +2,7 @@
 #include "DaisyDuino.h"
 #include <MIDI.h>
 #include "MidiSync.h"
+#include <math.h>
 
 #include "Controls.h"
 #include "Beatrepeat.h"

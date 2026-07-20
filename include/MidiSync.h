@@ -2,6 +2,7 @@
 
 #include "Config.h"
 #include <Arduino.h>
+#include <math.h>
 
 
 //Midi stuff//
@@ -12,11 +13,14 @@ extern bool clockRecived;
 extern bool clockCounter;
 
 extern volatile bool clockIntervalReady;
-extern volatile uint32_t lastClockSamples;
-extern volatile uint32_t samplesPerClockInstant;
-extern volatile uint32_t sampleCounter;
-extern volatile  uint32_t samplesPerQuarter;
+extern volatile float lastClockSamples;
+extern volatile float samplesPerClockInstant;
+extern volatile float sampleCounter;
+extern volatile  float rawsamplesPerQuarter;
+extern volatile  float samplesPerQuarter;
 extern volatile bool quarterReady;
+extern volatile uint16_t bpm;
+
 
 void HandleStart();
 void HandleClock();
